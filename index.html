@@ -63,13 +63,72 @@ function renderMemories(){
 function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function bubble(role,text){const el=document.createElement("div");el.className="bubble "+role;el.textContent=text;$("chat").appendChild(el);el.scrollIntoView({behavior:"smooth",block:"end"});return el}
 function setStatus(s){$("progress").textContent=s}
-$("load").onclick=async()=>{
- if(busy)return;busy=true;$("load").disabled=true;setStatus("Inicializando WebGPU e baixando/carregando o modelo…");
- try{
-   const model=$("model").value;
-   engine=await CreateMLCEngine(model,{initProgressCallback:p=>setStatus("Preparando modelo: "+Math.round((p.progress||0)*100)+"% — "+(p.text||""))});
-   setStatus("Modelo pronto. As respostas são geradas localmente neste dispositivo.");$("send").disabled=false;
- }catch(e){engine=null;setStatus("Não foi possível carregar o modelo: "+(e?.message||e)+". Tente Chrome atualizado, verifique suporte a WebGPU e conexão.")}
+
+$("load").onclick = async () => {
+  if (busy) return;
+
+  busy = true;
+  $("load").disabled = true;
+  $("send").disabled = true;
+
+  try {
+    setStatus("Verificando WebGPU...");
+
+    if (!window.isSecureContext) {
+      throw new Error("Abra a Íris pelo endereço HTTPS do GitHub Pages.");
+    }
+
+    if (!navigator.gpu) {
+      throw new Error(
+        "WebGPU indisponível. Atualize o Chrome e o Android. " +
+        "Se continuar, este navegador não suporta a execução local."
+      );
+    }
+
+    const adapter = await navigator.gpu.requestAdapter();
+
+    if (!adapter) {
+      throw new Error(
+        "Não foi possível acessar a GPU. " +
+        "Tente atualizar o navegador e desativar a economia de bateria."
+      );
+    }
+
+    const model = $("model").value;
+
+    setStatus(
+      "Preparando o modelo. Aguarde e mantenha a internet conectada..."
+    );
+
+    engine = await CreateMLCEngine(model, {
+      initProgressCallback: (p) => {
+        const percent = Math.round((p.progress || 0) * 100);
+        setStatus(
+          "Carregando cérebro: " + percent + "%\n" +
+          (p.text || "Preparando modelo...")
+        );
+      }
+    });
+
+    setStatus("Íris pronta! Modelo carregado com sucesso.");
+    $("send").disabled = false;
+
+  } catch (e) {
+    engine = null;
+
+    setStatus(
+      "Falha ao carregar o cérebro.\n\n" +
+      (e?.message || String(e)) +
+      "\n\nVerifique o suporte a WebGPU, a conexão e o espaço livre."
+    );
+
+  } finally {
+    busy = false;
+    $("load").disabled = false;
+    $("send").disabled = !engine;
+  }
+};
+
  finally{busy=false;$("load").disabled=false}
 };
 $("form").onsubmit=async e=>{
