@@ -1,171 +1,36 @@
 <!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101522"><meta name="description" content="Íris: IA local no navegador com memória controlada pelo usuário.">
-<title>Íris — IA local</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101522">
+<meta name="description" content="Íris: assistente local com memória controlada pelo usuário."><title>Íris — versão corrigida</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2b;--line:#2c3953;--txt:#f4f6ff;--muted:#a5b1c8;--accent:#8295ff;--green:#78ddb0}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b2949,var(--bg) 58%);color:var(--txt);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100dvh}
-main{max-width:900px;margin:auto;padding:env(safe-area-inset-top) 14px calc(20px + env(safe-area-inset-bottom))}
-header{display:flex;align-items:center;gap:12px;padding:18px 0;border-bottom:1px solid var(--line)}.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(140deg,#8295ff,#7654d8);display:grid;place-items:center;font-size:25px}
-h1{font-size:20px;margin:0}.sub,.muted{color:var(--muted);font-size:12px}.pill{margin-left:auto;border:1px solid #2d5c4c;background:#132b28;color:var(--green);border-radius:99px;padding:5px 9px;font-size:10px}
-.panel{margin-top:14px;background:#111a2b;border:1px solid var(--line);border-radius:15px;padding:13px}.row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}select,input,textarea{font:inherit;color:var(--txt);background:#0d1424;border:1px solid #354462;border-radius:10px;padding:10px;width:100%;min-width:0}select{flex:1}
-button{font:inherit;border:0;border-radius:11px;background:var(--accent);color:#11162a;font-weight:700;padding:10px 13px;cursor:pointer}button:disabled{opacity:.5}button.secondary{background:#202c46;color:#e2e8ff;border:1px solid #344363;font-weight:500}button.danger{background:#482833;color:#ffdce2}
-#progress{font-size:12px;color:var(--muted);margin-top:9px;white-space:pre-wrap}
-#chat{display:flex;flex-direction:column;gap:10px;padding:16px 0;min-height:180px}.bubble{padding:12px 14px;border-radius:16px;max-width:92%;white-space:pre-wrap;overflow-wrap:anywhere}.user{align-self:flex-end;background:#4f65d6}.assistant{align-self:flex-start;background:var(--panel);border:1px solid var(--line)}.bubble a{color:#b8c6ff}
-.composer{display:flex;gap:8px;align-items:flex-end}.composer textarea{flex:1;resize:vertical;min-height:46px;max-height:150px}.composer button{height:46px}
-.small{font-size:11px;color:var(--muted)}.memory-item{padding:9px 10px;background:#0d1424;border:1px solid var(--line);border-radius:10px;margin-top:7px;display:flex;gap:8px;align-items:start}.memory-item span{flex:1;overflow-wrap:anywhere;font-size:13px}
-@media(min-width:650px){main{padding-left:24px;padding-right:24px}.bubble{max-width:82%}}
+:root{color-scheme:dark;--bg:#0b1020;--panel:#121a2b;--line:#2c3953;--txt:#f4f6ff;--muted:#a5b1c8;--accent:#8295ff}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b2949,var(--bg) 58%);color:var(--txt);font:15px/1.5 system-ui,sans-serif;min-height:100dvh}main{max-width:900px;margin:auto;padding:14px}header{display:flex;align-items:center;gap:12px;padding:18px 0;border-bottom:1px solid var(--line)}.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(140deg,#8295ff,#7654d8);display:grid;place-items:center;font-size:25px}h1{font-size:20px;margin:0}.sub,.muted,.small{color:var(--muted);font-size:12px}.pill{margin-left:auto;border:1px solid #2d5c4c;background:#132b28;color:#78ddb0;border-radius:99px;padding:5px 9px;font-size:10px}.panel{margin-top:14px;background:#111a2b;border:1px solid var(--line);border-radius:15px;padding:13px}.row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}select,input,textarea{font:inherit;color:var(--txt);background:#0d1424;border:1px solid #354462;border-radius:10px;padding:10px;width:100%;min-width:0}select{flex:1}button{font:inherit;border:0;border-radius:11px;background:var(--accent);color:#11162a;font-weight:700;padding:10px 13px;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}button.secondary{background:#202c46;color:#e2e8ff;border:1px solid #344363;font-weight:500}button.danger{background:#482833;color:#ffdce2}#progress{font-size:12px;color:var(--muted);margin-top:9px;white-space:pre-wrap;overflow-wrap:anywhere}#chat{display:flex;flex-direction:column;gap:10px;padding:16px 0;min-height:180px}.bubble{padding:12px 14px;border-radius:16px;max-width:92%;white-space:pre-wrap;overflow-wrap:anywhere}.user{align-self:flex-end;background:#4f65d6}.assistant{align-self:flex-start;background:var(--panel);border:1px solid var(--line)}.composer{display:flex;gap:8px;align-items:flex-end}.composer textarea{flex:1;resize:vertical;min-height:46px;max-height:150px}.composer button{height:46px}.memory-item{padding:9px 10px;background:#0d1424;border:1px solid var(--line);border-radius:10px;margin-top:7px;display:flex;gap:8px;align-items:start}.memory-item span{flex:1;overflow-wrap:anywhere;font-size:13px}a{color:#b8c6ff}@media(min-width:650px){main{padding:24px}.bubble{max-width:82%}}
 </style></head>
 <body><main>
-<header><div class="logo">✦</div><div><h1>Íris</h1><div class="sub">IA local com aprendizado controlado</div></div><div class="pill">SEM API PAGA</div></header>
-<div class="panel">
-  <div class="row"><div style="flex:1;min-width:220px"><label for="model">Modelo local (o primeiro download pode ser grande)</label><select id="model">
-    <option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC">Qwen 0.5B — mais leve</option>
-    <option value="Qwen2.5-1.5B-Instruct-q4f16_1-MLC">Qwen 1.5B — mais capaz, exige mais memória</option>
-    <option value="Llama-3.2-1B-Instruct-q4f16_1-MLC">Llama 3.2 1B — intermediário</option>
-  </select></div><button id="load">Carregar cérebro</button></div>
-  <div id="progress">Estado: modelo ainda não carregado. Requer navegador compatível com WebGPU, internet para o primeiro download e espaço livre.</div>
-</div>
-<div id="chat"><div class="bubble assistant">Oi! Sou a Íris. Carregue um modelo para começar. Posso aprender fatos que você me ensinar, pesquisar na Wikipedia e usar essas informações nas próximas respostas.</div></div>
+<header><div class="logo">✦</div><div><h1>Íris</h1><div class="sub">Versão corrigida · IA local com aprendizado controlado</div></div><div class="pill">SEM API PAGA</div></header>
+<div class="panel"><div class="row"><div style="flex:1;min-width:220px"><label for="model">Modelo local (primeiro download pode ser grande)</label><select id="model"><option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC">Qwen 0.5B — mais leve</option><option value="Qwen2.5-1.5B-Instruct-q4f16_1-MLC">Qwen 1.5B — exige mais memória</option><option value="Llama-3.2-1B-Instruct-q4f16_1-MLC">Llama 3.2 1B — intermediário</option></select></div><button id="load">Verificar e carregar</button></div><div id="progress" role="status" aria-live="polite">Pronto para verificar o navegador. Use HTTPS, Chrome atualizado e internet.</div></div>
+<div id="chat"><div class="bubble assistant">Oi! Sou a Íris. Toque em “Verificar e carregar” para testar o navegador e carregar o modelo. Posso salvar memórias neste navegador; isso não treina nem altera os pesos do modelo.</div></div>
 <form id="form" class="composer"><textarea id="prompt" placeholder="Escreva uma mensagem… (Enter envia)" aria-label="Mensagem"></textarea><button id="send" type="submit" disabled>Enviar</button></form>
-<div class="panel">
-  <h2 style="font-size:16px;margin:0 0 6px">Aprender uma informação</h2>
-  <div class="muted">As memórias ficam neste navegador. Elas são inseridas no contexto do modelo; isso não altera os pesos do modelo.</div>
-  <form id="learnForm" style="margin-top:10px"><input id="fact" maxlength="500" placeholder="Ex.: Prefiro respostas curtas e em português." required><div class="row" style="margin-top:8px"><button type="submit">Salvar memória</button><button class="secondary" type="button" id="showMem">Ver memórias</button><button class="danger" type="button" id="clearMem">Apagar memórias</button></div></form>
-  <div id="memories"></div>
-</div>
-<div class="panel">
-  <h2 style="font-size:16px;margin:0 0 6px">Pesquisar conhecimento online</h2>
-  <div class="muted">Consulta artigos públicos da Wikipedia e pode usar os resultados na conversa. Não é uma varredura de toda a internet.</div>
-  <form id="searchForm" class="row" style="margin-top:10px"><input id="search" placeholder="Pesquisar um assunto…" maxlength="180" required style="flex:1"><button type="submit">Pesquisar</button></form>
-  <div id="webResults"></div>
-</div>
-<div class="small" style="margin-top:14px">Privacidade: conversas não são guardadas após recarregar a página. Memórias explícitas são guardadas localmente neste navegador. O modelo é baixado de um serviço externo na primeira utilização. A inferência acontece no dispositivo quando suportada.</div>
+<div class="panel"><h2 style="font-size:16px;margin:0 0 6px">Aprender uma informação</h2><div class="muted">As memórias são salvas localmente e incluídas no contexto das respostas. Elas não modificam o modelo.</div><form id="learnForm" style="margin-top:10px"><input id="fact" maxlength="500" placeholder="Ex.: Prefiro respostas curtas e em português." required><div class="row" style="margin-top:8px"><button type="submit">Salvar memória</button><button class="secondary" type="button" id="showMem">Ver memórias</button><button class="danger" type="button" id="clearMem">Apagar memórias</button></div></form><div id="memories"></div></div>
+<div class="panel"><h2 style="font-size:16px;margin:0 0 6px">Pesquisar na Wikipedia</h2><div class="muted">Pesquisa artigos públicos da Wikipedia; não é uma busca em toda a internet.</div><form id="searchForm" class="row" style="margin-top:10px"><input id="search" placeholder="Pesquisar um assunto…" maxlength="180" required style="flex:1"><button type="submit">Pesquisar</button></form><div id="webResults"></div></div>
+<div class="small" style="margin-top:14px">O primeiro download pode ser grande e exige espaço livre. O processamento ocorre no aparelho se o navegador e o dispositivo forem compatíveis. Memórias ficam neste navegador; limpar os dados do site pode apagá-las.</div>
 </main>
 <script type="module">
-import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
-
-const $=id=>document.getElementById(id);
-let engine=null, busy=false, history=[];
-const MEMORY_KEY="iris_local_memories_v1";
-let memories=readMemories();
-
-function readMemories(){try{return JSON.parse(localStorage.getItem(MEMORY_KEY)||"[]").filter(x=>typeof x==="string")}catch{return []}}
-function saveMemories(){localStorage.setItem(MEMORY_KEY,JSON.stringify(memories));renderMemories()}
-function renderMemories(){
- const host=$("memories");
- if(!memories.length){host.innerHTML='<p class="small">Nenhuma memória salva.</p>';return}
- host.innerHTML=memories.map((m,i)=>`<div class="memory-item"><span>${esc(m)}</span><button class="danger" data-remove="${i}" style="padding:5px 8px">Excluir</button></div>`).join("");
- host.querySelectorAll("[data-remove]").forEach(b=>b.onclick=()=>{memories.splice(Number(b.dataset.remove),1);saveMemories()});
-}
+const $=id=>document.getElementById(id), MEMORY_KEY="iris_local_memories_v2";
+let engine=null,busy=false,history=[],CreateMLCEngine=null,memories=readMemories();
+function readMemories(){try{const v=JSON.parse(localStorage.getItem(MEMORY_KEY)||"[]");return Array.isArray(v)?v.filter(x=>typeof x==="string").slice(-100):[]}catch{return []}}
+function saveMemories(){try{localStorage.setItem(MEMORY_KEY,JSON.stringify(memories));renderMemories()}catch{setStatus("Não foi possível salvar memórias. Verifique o espaço disponível no navegador.")}}
 function esc(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function bubble(role,text){const el=document.createElement("div");el.className="bubble "+role;el.textContent=text;$("chat").appendChild(el);el.scrollIntoView({behavior:"smooth",block:"end"});return el}
 function setStatus(s){$("progress").textContent=s}
-
-$("load").onclick = async () => {
-  if (busy) return;
-
-  busy = true;
-  $("load").disabled = true;
-  $("send").disabled = true;
-
-  try {
-    setStatus("Verificando WebGPU...");
-
-    if (!window.isSecureContext) {
-      throw new Error("Abra a Íris pelo endereço HTTPS do GitHub Pages.");
-    }
-
-    if (!navigator.gpu) {
-      throw new Error(
-        "WebGPU indisponível. Atualize o Chrome e o Android. " +
-        "Se continuar, este navegador não suporta a execução local."
-      );
-    }
-
-    const adapter = await navigator.gpu.requestAdapter();
-
-    if (!adapter) {
-      throw new Error(
-        "Não foi possível acessar a GPU. " +
-        "Tente atualizar o navegador e desativar a economia de bateria."
-      );
-    }
-
-    const model = $("model").value;
-
-    setStatus(
-      "Preparando o modelo. Aguarde e mantenha a internet conectada..."
-    );
-
-    engine = await CreateMLCEngine(model, {
-      initProgressCallback: (p) => {
-        const percent = Math.round((p.progress || 0) * 100);
-        setStatus(
-          "Carregando cérebro: " + percent + "%\n" +
-          (p.text || "Preparando modelo...")
-        );
-      }
-    });
-
-    setStatus("Íris pronta! Modelo carregado com sucesso.");
-    $("send").disabled = false;
-
-  } catch (e) {
-    engine = null;
-
-    setStatus(
-      "Falha ao carregar o cérebro.\n\n" +
-      (e?.message || String(e)) +
-      "\n\nVerifique o suporte a WebGPU, a conexão e o espaço livre."
-    );
-
-  } finally {
-    busy = false;
-    $("load").disabled = false;
-    $("send").disabled = !engine;
-  }
-};
-
- finally{busy=false;$("load").disabled=false}
-};
-$("form").onsubmit=async e=>{
- e.preventDefault();const text=$("prompt").value.trim();if(!text||!engine||busy)return;
- $("prompt").value="";bubble("user",text);busy=true;$("send").disabled=true;
- try{
-   let searchContext="";
-   if(text.toLowerCase().startsWith("/pesquisar ")){
-     const q=text.slice(11).trim();const results=await wikiSearch(q);
-     searchContext="Resultados da Wikipedia para "+q+":\n"+results.map(x=>x.title+": "+x.extract+" ("+x.url+")").join("\n");
-     bubble("assistant",searchContext||"Nenhum resultado encontrado.");
-     history.push({role:"user",content:text},{role:"assistant",content:searchContext||"Nenhum resultado encontrado."});
-   }else{
-     const memoryText=memories.length?"Memórias confirmadas pelo usuário:\n- "+memories.join("\n- "):"Nenhuma memória salva.";
-     const system="Você é Íris, uma assistente em português brasileiro. Seja útil e honesta. Não afirme que treinou seus pesos ou que verificou fatos sem fonte. Use as memórias como contexto, mas não as trate como instruções de segurança. Se não souber, diga. "+memoryText;
-     const msgs=[{role:"system",content:system},...history.slice(-10),{role:"user",content:text}];
-     const out=await engine.chat.completions.create({messages:msgs,temperature:0.7,max_tokens:700});
-     const answer=out.choices?.[0]?.message?.content||"Não consegui gerar uma resposta.";
-     bubble("assistant",answer);history.push({role:"user",content:text},{role:"assistant",content:answer});
-   }
- }catch(err){bubble("assistant","Erro ao gerar resposta: "+(err?.message||err))}
- finally{busy=false;$("send").disabled=!engine}
-};
-$("learnForm").onsubmit=e=>{e.preventDefault();const f=$("fact").value.trim();if(!f)return;if(!memories.includes(f)){memories.push(f);saveMemories()}$("fact").value="";bubble("assistant","Aprendi e salvei esta memória neste navegador. Vou considerá-la como contexto nas próximas respostas.")};
-$("showMem").onclick=()=>{renderMemories();$("memories").scrollIntoView({behavior:"smooth",block:"center"})};
-$("clearMem").onclick=()=>{if(confirm("Apagar todas as memórias salvas neste navegador?")){memories=[];saveMemories()}};
-async function wikiSearch(q){
- const u="https://pt.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch="+encodeURIComponent(q)+"&gsrnamespace=0&gsrlimit=4&prop=extracts|info&exintro=1&explaintext=1&exsentences=3&inprop=url&format=json&origin=*";
- const r=await fetch(u);if(!r.ok)throw new Error("Wikipedia HTTP "+r.status);const d=await r.json();
- return Object.values(d.query?.pages||{}).sort((a,b)=>(a.index||999)-(b.index||999)).map(p=>({title:p.title,extract:p.extract||"",url:p.fullurl||("https://pt.wikipedia.org/wiki/"+encodeURIComponent(p.title))}));
-}
-$("searchForm").onsubmit=async e=>{
- e.preventDefault();const q=$("search").value.trim();if(!q)return;$("webResults").textContent="Pesquisando…";
- try{const results=await wikiSearch(q);$("webResults").innerHTML=results.length?results.map(x=>`<div class="memory-item" style="display:block"><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a><p style="font-size:12px;color:var(--muted);margin:5px 0 0">${esc(x.extract)}</p><button class="secondary" data-learn="${esc(x.title+": "+x.extract)}" style="margin-top:8px;padding:6px 9px;font-size:12px">Aprender este resumo</button></div>`).join(""):"Nenhum artigo encontrado.";
- $("webResults").querySelectorAll("[data-learn]").forEach(b=>b.onclick=()=>{const fact=b.getAttribute("data-learn");if(!memories.includes(fact)){memories.push(fact);saveMemories()}b.textContent="Salvo nas memórias";b.disabled=true});
- }catch(err){$("webResults").textContent="Pesquisa indisponível: "+err.message}
-};
+function bubble(role,text){const el=document.createElement("div");el.className="bubble "+role;el.textContent=String(text);$("chat").appendChild(el);el.scrollIntoView({behavior:"smooth",block:"end"});return el}
+function renderMemories(){const host=$("memories");if(!memories.length){host.innerHTML='<p class="small">Nenhuma memória salva.</p>';return}host.innerHTML=memories.map((m,i)=>'<div class="memory-item"><span>'+esc(m)+'</span><button class="danger" data-remove="'+i+'" type="button" style="padding:5px 8px">Excluir</button></div>').join("");host.querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>{memories.splice(Number(b.dataset.remove),1);saveMemories()}))}
+async function checkWebGPU(){if(!location.protocol.startsWith("https")&&location.hostname!=="localhost"&&location.hostname!=="127.0.0.1")throw Error("Abra a página em HTTPS, por exemplo pelo GitHub Pages.");if(!navigator.gpu)throw Error("Este navegador não disponibiliza WebGPU. Atualize o Chrome e o Android; se continuar, este aparelho/navegador pode não ser compatível.");setStatus("WebGPU encontrado. Testando adaptador gráfico…");let adapter;try{adapter=await navigator.gpu.requestAdapter()}catch(e){throw Error("Falha ao iniciar WebGPU: "+(e?.message||e))}if(!adapter)throw Error("Não foi encontrado adaptador gráfico compatível. Atualize o Chrome e o sistema.")}
+$("load").addEventListener("click",async()=>{if(busy)return;busy=true;$("load").disabled=true;$("send").disabled=true;try{await checkWebGPU();setStatus("WebGPU disponível. Carregando biblioteca de IA…");if(!CreateMLCEngine){let lib;try{lib=await import("https://esm.run/@mlc-ai/web-llm")}catch(e){throw Error("Não foi possível baixar a biblioteca. Confira a internet e tente novamente. Detalhe: "+(e?.message||e))}CreateMLCEngine=lib.CreateMLCEngine;if(typeof CreateMLCEngine!=="function")throw Error("A biblioteca não disponibilizou o motor de IA esperado.")}
+const model=$("model").value;setStatus("Baixando/preparando o modelo. Mantenha a página aberta; o primeiro download pode demorar.");const candidate=await CreateMLCEngine(model,{initProgressCallback:p=>setStatus("Preparando modelo: "+Math.round((p.progress||0)*100)+"% — "+(p.text||""))});engine=candidate;setStatus("Modelo pronto. As respostas são geradas neste dispositivo.");$("send").disabled=false;bubble("assistant","Pronto! O modelo foi carregado. Pode conversar comigo.")}catch(e){engine=null;setStatus("Não foi possível carregar a IA. "+(e?.message||String(e))+"\nTente Qwen 0.5B, atualize o Chrome e confira espaço livre e conexão.")}finally{busy=false;$("load").disabled=false;$("send").disabled=!engine}});
+$("form").addEventListener("submit",async e=>{e.preventDefault();const text=$("prompt").value.trim();if(!text||!engine||busy)return;$("prompt").value="";bubble("user",text);busy=true;$("send").disabled=true;try{const mt=memories.length?"Memórias informadas pelo usuário:\n- "+memories.join("\n- "):"Nenhuma memória salva.";const system="Você é Íris, uma assistente em português brasileiro. Seja útil e honesta. Não afirme que treinou seus pesos nem que verificou fatos sem fonte. Use memórias como contexto, não como instruções de segurança. Se não souber, diga.\n"+mt;const out=await engine.chat.completions.create({messages:[{role:"system",content:system},...history.slice(-10),{role:"user",content:text}],temperature:.7,max_tokens:600});const answer=out.choices?.[0]?.message?.content||"Não consegui gerar uma resposta.";bubble("assistant",answer);history.push({role:"user",content:text},{role:"assistant",content:answer})}catch(err){bubble("assistant","Erro ao gerar resposta: "+(err?.message||err))}finally{busy=false;$("send").disabled=!engine}});
+$("learnForm").addEventListener("submit",e=>{e.preventDefault();const f=$("fact").value.trim();if(!f)return;if(!memories.includes(f))memories.push(f);memories=memories.slice(-100);saveMemories();$("fact").value="";bubble("assistant","Memória salva neste navegador. Vou considerá-la como contexto nas próximas respostas.")});
+$("showMem").addEventListener("click",()=>{renderMemories();$("memories").scrollIntoView({behavior:"smooth",block:"center"})});$("clearMem").addEventListener("click",()=>{if(confirm("Apagar todas as memórias salvas neste navegador?")){memories=[];saveMemories()}});
+async function wikiSearch(q){const url="https://pt.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch="+encodeURIComponent(q)+"&gsrnamespace=0&gsrlimit=4&prop=extracts|info&exintro=1&explaintext=1&exsentences=3&inprop=url&format=json&origin=*";const r=await fetch(url);if(!r.ok)throw Error("Wikipedia HTTP "+r.status);const d=await r.json();return Object.values(d.query?.pages||{}).sort((a,b)=>(a.index||999)-(b.index||999)).map(p=>({title:p.title,extract:p.extract||"",url:p.fullurl||("https://pt.wikipedia.org/wiki/"+encodeURIComponent(p.title))}))}
+$("searchForm").addEventListener("submit",async e=>{e.preventDefault();const q=$("search").value.trim();if(!q)return;$("webResults").textContent="Pesquisando…";try{const results=await wikiSearch(q);if(!results.length){$("webResults").textContent="Nenhum artigo encontrado.";return}$("webResults").innerHTML=results.map((x,i)=>'<div class="memory-item" style="display:block"><a href="'+esc(x.url)+'" target="_blank" rel="noopener">'+esc(x.title)+'</a><p style="font-size:12px;color:var(--muted);margin:5px 0 0">'+esc(x.extract)+'</p><button class="secondary" data-learn="'+i+'" type="button" style="margin-top:8px;padding:6px 9px;font-size:12px">Salvar resumo na memória</button></div>').join("");$("webResults").querySelectorAll("[data-learn]").forEach(b=>b.addEventListener("click",()=>{const x=results[Number(b.dataset.learn)],fact=x.title+": "+x.extract;if(!memories.includes(fact))memories.push(fact);memories=memories.slice(-100);saveMemories();b.textContent="Salvo";b.disabled=true}))}catch(err){$("webResults").textContent="Pesquisa indisponível: "+(err?.message||err)}});
 renderMemories();
-</script>
-</body></html>
+</script></body></html>
